@@ -1,0 +1,14 @@
+# Web interface
+fastapi>=0.95.0
+uvicorn>=0.20.0
+python-multipart>=0.0.5
+jinja2>=3.1.2
+websockets>=10.4
+
+# Vector search
+faiss-cpu>=1.7.3
+scikit-learn>=1.0.2
+
+# Audio/Video processing
+moviepy>=1.0.3
+pydub>=0.25.1

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant d'Entreprise Multimodal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container chat-container">
+        <div class="chat-header">
+            <h1>Assistant d'Entreprise Multimodal</h1>
+            <button id="resetBtn" class="btn btn-sm btn-outline-light reset-btn">Nouvelle conversation</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Bonjour ! Je suis votre assistant d'entreprise multimodal. Je peux vous aider avec :
+                <ul>
+                    <li>Assistance aux employés (RH, IT, logistique)</li>
+                    <li>Recherche documentaire et gestion des connaissances</li>
+                    <li>Maintenance et diagnostic technique</li>
+                    <li>Support informatique interne</li>
+                </ul>
+                Vous pouvez également m'envoyer des images, des fichiers audio ou vidéo pour une assistance plus précise.
+            </div>
+        </div>
+        
+        <div class="file-upload">
+            <div class="mb-3">
+                <label for="fileUpload" class="form-label">Joindre un fichier (optionnel)</label>
+                <input class="form-control" type="file" id="fileUpload" accept=".jpg,.jpeg,.png,.gif,.pdf,.docx,.pptx,.xlsx,.mp3,.wav,.mp4,.avi">
+            </div>
+            <div id="mediaPreviewContainer" style="display: none;">
+                <img id="imagePreview" class="media-preview" style="display: none;">
+                <audio id="audioPreview" class="media-preview" controls style="display: none;"></audio>
+                <video id="videoPreview" class="media-preview" controls style="display: none;"></video>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Tapez votre message ici..." class="form-control">
+            <button id="sendBtn" class="btn btn-primary">Envoyer</button>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner-border loading-spinner text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p>Traitement en cours...</p>
+        </div>
+    </div>
+
+    <script src="static/js/script.js"></script>
+</body>
+</html>

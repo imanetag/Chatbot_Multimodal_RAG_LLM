@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant VIP Multimodal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --secondary-color: #334155;
+            --accent-color: #f59e0b;
+            --text-color: #f8fafc;
+            --light-bg: #475569;
+            --dark-bg: #0f172a;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        .vip-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .vip-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        .vip-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vip-header h1 i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+        
+        .vip-badge {
+            background-color: var(--accent-color);
+            color: var(--dark-bg);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .vip-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: var(--primary-color);
+            border-left: 1px solid var(--secondary-color);
+            border-right: 1px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background-color: var(--secondary-color);
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background: linear-gradient(135deg, var(--secondary-color), var(--light-bg));
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        
+        .use-case-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background-color: var(--accent-color);
+            color: var(--dark-bg);
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .vip-file-upload {
+            margin-bottom: 15px;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--light-bg);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .vip-file-upload:hover {
+            border-color: var(--accent-color);
+        }
+        
+        .media-preview {
+            max-width: 300px;
+            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .vip-input {
+            display: flex;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--light-bg);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vip-input input {
+            flex-grow: 1;
+            padding: 15px;
+            border: 2px solid var(--light-bg);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .vip-input input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+        }
+        
+        .vip-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .vip-button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, var(--accent-color), #e67e22);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .vip-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .vip-button i {
+            margin-left: 8px;
+        }
+        
+        .vip-button.reset-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .vip-button.reset-btn:hover {
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message-media {
+            max-width: 250px;
+            max-height: 150px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 1px;
+            background-color: var(--accent-color);
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        .typing-indicator span:nth-of-type(1) {
+            animation: 1s blink infinite 0.3333s;
+        }
+        
+        .typing-indicator span:nth-of-type(2) {
+            animation: 1s blink infinite 0.6666s;
+        }
+        
+        .typing-indicator span:nth-of-type(3) {
+            animation: 1s blink infinite 0.9999s;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 1; }
+        }
+        
+        .features-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-item:hover {
+            background-color: var(--light-bg);
+        }
+        
+        .feature-item i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        
+        .feature-item span {
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .vip-header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .vip-badge {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            
+            .vip-input input {
+                padding: 12px;
+            }
+            
+            .vip-button {
+                padding: 12px 20px;
+            }
+            
+            .features-bar {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 10px 5px;
+            }
+            
+            .feature-item {
+                min-width: 80px;
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vip-container">
+        <div class="vip-header">
+            <h1><i class="fas fa-crown"></i> Assistant Multimodal <span class="vip-badge">Premium</span></h1>
+            <button id="resetBtn" class="vip-button reset-btn">
+                <i class="fas fa-sync-alt"></i> Nouvelle conversation
+            </button>
+        </div>
+        
+        <div class="features-bar">
+            <div class="feature-item">
+                <i class="fas fa-user-tie"></i>
+                <span>Assistance RH</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-book"></i>
+                <span>Documentation</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-tools"></i>
+                <span>Maintenance</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-headset"></i>
+                <span>Support IT</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-image"></i>
+                <span>Analyse d'images</span>
+            </div>
+        </div>
+        
+        <div class="vip-messages" id="vipMessages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    Bonjour et bienvenue dans votre espace d'assistance premium. Je suis votre assistant personnel multimodal, prêt à vous aider avec :
+                    <ul>
+                        <li>Assistance aux employés (RH, IT, logistique)</li>
+                        <li>Recherche documentaire et gestion des connaissances</li>
+                        <li>Maintenance et diagnostic technique</li>
+                        <li>Support informatique interne</li>
+                    </ul>
+                    Vous pouvez également m'envoyer des images, des fichiers audio ou vidéo pour une assistance plus précise.
+                </div>
+                <div class="message-time">Aujourd'hui, 10:52</div>
+            </div>
+        </div>
+        
+        <div class="vip-file-upload">
+            <div class="mb-3">
+                <label for="fileUpload" class="form-label d-flex align-items-center">
+                    <i class="fas fa-paperclip me-2" style="color: var(--accent-color);"></i>
+                    <span>Joindre un fichier (optionnel)</span>
+                </label>
+                <input class="form-control bg-dark text-light border-secondary" type="file" id="fileUpload" accept=".jpg,.jpeg,.png,.gif,.pdf,.docx,.pptx,.xlsx,.mp3,.wav,.mp4,.avi">
+            </div>
+            <div id="mediaPreviewContainer" style="display: none;">
+                <img id="imagePreview" class="media-preview" style="display: none;">
+                <audio id="audioPreview" class="media-preview" controls style="display: none;"></audio>
+                <video id="videoPreview" class="media-preview" controls style="display: none;"></video>
+            </div>
+        </div>
+        
+        <div class="vip-input">
+            <input type="text" id="userInput" placeholder="Comment puis-je vous aider aujourd'hui ?">
+            <button id="sendBtn" class="vip-button">
+                Envoyer <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>Traitement en cours...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const vipMessages = document.getElementById('vipMessages');
+            const userInput = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const fileUpload = document.getElementById('fileUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const audioPreview = document.getElementById('audioPreview');
+            const videoPreview = document.getElementById('videoPreview');
+            const mediaPreviewContainer = document.getElementById('mediaPreviewContainer');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const featureItems = document.querySelectorAll('.feature-item');
+            
+            // Handle feature item clicks
+            featureItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const featureType = this.querySelector('span').textContent;
+                    let sampleQuery = '';
+                    
+                    switch(featureType) {
+                        case 'Assistance RH':
+                            sampleQuery = "Quelles sont les procédures pour demander des congés ?";
+                            break;
+                        case 'Documentation':
+                            sampleQuery = "Où puis-je trouver la documentation sur les processus internes ?";
+                            break;
+                        case 'Maintenance':
+                            sampleQuery = "Comment réparer la valve de régulation TR-7500 ?";
+                            break;
+                        case 'Support IT':
+                            sampleQuery = "Je n'arrive pas à me connecter au VPN de l'entreprise";
+                            break;
+                        case 'Analyse d'images':
+                            sampleQuery = "Peux-tu analyser cette image de pièce détachée ?";
+                            break;
+                    }
+                    
+                    userInput.value = sampleQuery;
+                    userInput.focus();
+                });
+            });
+            
+            // Handle file upload preview
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) {
+                    mediaPreviewContainer.style.display = 'none';
+                    return;
+                }
+                
+                const fileType = file.type.split('/')[0];
+                
+                // Reset all previews
+                imagePreview.style.display = 'none';
+                audioPreview.style.display = 'none';
+                videoPreview.style.display = 'none';
+                
+                if (fileType === 'image') {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        mediaPreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (fileType === 'audio') {
+                    const url = URL.createObjectURL(file);
+                    audioPreview.src = url;
+                    audioPreview.style.display = 'block';
+                    mediaPreviewContainer.style.display = 'block';
+                } else if (fileType === 'video') {
+                    const url = URL.createObjectURL(file);
+                    videoPreview.src = url;
+                    videoPreview.style.display = 'block';
+                    mediaPreviewContainer.style.display = 'block';
+                } else {
+                    // For documents, just show the filename
+                    const docPreview = document.createElement('div');
+                    docPreview.textContent = `Fichier sélectionné: ${file.name}`;
+                    docPreview.style.color = 'var(--text-color)';
+                    docPreview.style.padding = '10px';
+                    docPreview.style.backgroundColor = 'var(--primary-color)';
+                    docPreview.style.borderRadius = '8px';
+                    docPreview.style.marginTop = '10px';
+                    mediaPreviewContainer.innerHTML = '';
+                    mediaPreviewContainer.appendChild(docPreview);
+                    mediaPreviewContainer.style.display = 'block';
+                }
+            });
+            
+            // Get current time in HH:MM format
+            function getCurrentTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                return `Aujourd'hui, ${hours}:${minutes}`;
+            }
+            
+            // Send message function
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '' && !fileUpload.files[0]) return;
+                
+                // Add user message to chat
+                addMessage(message, 'user');
+                
+                // Clear input
+                userInput.value = '';
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('query', message);
+                
+                if (fileUpload.files[0]) {
+                    formData.append('file', fileUpload.files[0]);
+                    
+                    // Store file info for display
+                    const fileInfo = {
+                        type: fileUpload.files[0].type.split('/')[0],
+                        url: URL.createObjectURL(fileUpload.files[0])
+                    };
+                    
+                    // Reset file upload
+                    mediaPreviewContainer.style.display = 'none';
+                    fileUpload.value = '';
+                }
+                
+                // Add typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.classList.add('message', 'bot-message', 'typing-message');
+                typingIndicator.innerHTML = `
+                    <div class="message-content">
+                        En train d'écrire
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                `;
+                vipMessages.appendChild(typingIndicator);
+                vipMessages.scrollTop = vipMessages.scrollHeight;
+                
+                // Simulate response for demo
+                setTimeout(() => {
+                    // Remove typing indicator
+                    const typingMessage = document.querySelector('.typing-message');
+                    if (typingMessage) {
+                        vipMessages.removeChild(typingMessage);
+                    }
+                    
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Add bot response to chat
+                    const demoResponses = [
+                        "Voici les informations que j'ai trouvées dans la base de connaissances concernant votre question. Les procédures d'onboarding sont disponibles dans le document 'Onboarding_Procedures.pdf' sur le SharePoint de l'entreprise. Vous y trouverez toutes les étapes nécessaires ainsi que les contacts des personnes responsables.",
+                        "D'après la documentation technique, la pièce que vous montrez sur l'image est une valve de régulation modèle TR-7500. Vous trouverez le guide de maintenance complet dans la section 'Équipements industriels' du portail technique. Je vous recommande particulièrement de consulter les pages 15-18 qui détaillent la procédure de remplacement.",
+                        "Pour résoudre ce problème de connexion VPN, veuillez vérifier que vous utilisez bien la dernière version du client VPN (v4.2.1) et que vous vous connectez avec vos identifiants du domaine principal. Si le problème persiste, essayez de redémarrer votre ordinateur et de désactiver temporairement votre antivirus. Pour une assistance immédiate, contactez le support IT au poste 4500.",
+                        "J'ai trouvé plusieurs documents pertinents concernant votre demande. Le plus récent est la note de service du 15 mars concernant les nouvelles procédures de demande de congés. Selon cette note, toutes les demandes doivent désormais être soumises via le portail RH au moins 3 semaines à l'avance. Souhaitez-vous que je vous fournisse un résumé plus détaillé ou préférez-vous que je vous envoie directement le document complet?"
+                    ];
+                    
+                    const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
+                    
+                    addMessage(randomResponse, 'bot', {
+                        use_case: ['employee_assistance', 'knowledge_management', 'maintenance', 'helpdesk'][Math.floor(Math.random() * 4)]
+                    });
+                    
+                    // Scroll to bottom
+                    vipMessages.scrollTop = vipMessages.scrollHeight;
+                }, 2000);
+            }
+            
+            // Add message to chat
+            function addMessage(text, sender, data = null) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                
+                // Add message content
+                const messageContent = document.createElement('div');
+                messageContent.classList.add('message-content');
+                messageContent.textContent = text;
+                messageDiv.appendChild(messageContent);
+                
+                // Add timestamp
+                const messageTime = document.createElement('div');
+                messageTime.classList.add('message-time');
+                messageTime.textContent = getCurrentTime();
+                messageDiv.appendChild(messageTime);
+                
+                // If it's a bot message and we have use case info, add a badge
+                if (sender === 'bot' && data && data.use_case) {
+                    const useCaseBadge = document.createElement('span');
+                    useCaseBadge.classList.add('use-case-badge');
+                    
+                    let useCaseLabel = 'Général';
+                    switch(data.use_case) {
+                        case 'employee_assistance':
+                            useCaseLabel = 'RH';
+                            break;
+                        case 'knowledge_management':
+                            useCaseLabel = 'Documentation';
+                            break;
+                        case 'maintenance':
+                            useCaseLabel = 'Maintenance';
+                            break;
+                        case 'helpdesk':
+                            useCaseLabel = 'IT Support';
+                            break;
+                        case 'multimodal':
+                            useCaseLabel = 'Multimodal';
+                            break;
+                    }
+                    
+                    useCaseBadge.textContent = useCaseLabel;
+                    messageContent.appendChild(document.createElement('br'));
+                    messageContent.appendChild(useCaseBadge);
+                }
+                
+                vipMessages.appendChild(messageDiv);
+                vipMessages.scrollTop = vipMessages.scrollHeight;
+            }
+            
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            resetBtn.addEventListener('click', function() {
+                // Reset conversation
+                // Clear chat messages except the first one (welcome message)
+                while (vipMessages.children.length > 1) {
+                    vipMessages.removeChild(vipMessages.lastChild);
+                }
+                
+                // Add system message
+                addMessage('Nouvelle conversation démarrée. Comment puis-je vous aider aujourd\'hui ?', 'bot');
+                
+                // Clear file upload
+                fileUpload.value = '';
+                mediaPreviewContainer.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

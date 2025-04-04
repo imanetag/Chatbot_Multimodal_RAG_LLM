@@ -1,0 +1,4 @@
+# LLM and embedding models
+sentence-transformers>=2.2.0
+transformers>=4.25.0
+huggingface_hub>=0.12.0
